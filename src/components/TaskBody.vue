@@ -73,36 +73,38 @@ License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 					<span :style="{'background-color': task.calendar.color}" class="calendar-indicator" />
 					<span class="calendar-name">{{ task.calendar.displayName }}</span>
 				</div>
-				<div v-if="task.due" :class="{overdue: overdue(task.dueMoment)}" class="duedate">
-					{{ dueDateString }}
-				</div>
 				<div v-if="task.pinned">
 					<span class="icon icon-bw icon-pinned" />
 				</div>
 				<div v-if="task.note!=''">
 					<span class="icon icon-bw icon-note" />
 				</div>
-				<button v-if="hasCompletedSubtasks"
-					class="inline reactive no-nav"
-					:title="$t('tasks', 'Toggle visibility of completed subtasks.')"
-					@click="toggleCompletedSubtasksVisibility(task)">
-					<span :class="{'active': !task.hideCompletedSubtasks}"
-						class="icon icon-bw icon-toggle toggle-completed-subtasks" />
-				</button>
-				<button v-if="Object.values(task.subTasks).length"
-					class="inline reactive no-nav"
-					:title="$t('tasks', 'Toggle visibility of all subtasks.')"
-					@click="toggleSubtasksVisibility(task)">
-					<span :class="task.hideSubtasks ? 'icon-subtasks-hidden' : 'icon-subtasks-visible'"
-						class="icon icon-bw subtasks" />
-				</button>
-				<button v-if="!task.calendar.readOnly"
-					class="inline task-addsubtask add-subtask reactive no-nav"
-					:taskId="task.uri"
-					:title="subtasksCreationPlaceholder"
-					@click="showSubtaskInput = true">
-					<span class="icon icon-bw icon-add" :taskId="task.uri" />
-				</button>
+				<div v-if="task.due" :class="{overdue: overdue(task.dueMoment)}" class="duedate">
+					{{ dueDateString }}
+				</div>
+				<Actions class="reactive no-nav">
+					<ActionButton v-if="hasCompletedSubtasks"
+						class="reactive no-nav"
+						@click="toggleCompletedSubtasksVisibility(task)">
+						{{ task.hideCompletedSubtasks ? $t('tasks', 'Show completed subtasks') : $t('tasks', 'Hide completed subtasks') }}
+						<!-- <span :class="{'active': !task.hideCompletedSubtasks}"
+							class="icon icon-bw icon-toggle toggle-completed-subtasks" /> -->
+					</ActionButton>
+					<ActionButton v-if="Object.values(task.subTasks).length"
+						class="reactive no-nav"
+						@click="toggleSubtasksVisibility(task)">
+						<!-- <span :class="task.hideSubtasks ? 'icon-subtasks-hidden' : 'icon-subtasks-visible'"
+							class="icon icon-bw subtasks" /> -->
+						{{ task.hideSubtasks ? $t('tasks', 'Show subtasks') : $t('tasks', 'Hide subtasks') }}
+					</ActionButton>
+					<ActionButton v-if="!task.calendar.readOnly"
+						class="reactive no-nav"
+						icon="icon-add"
+						@click="showSubtaskInput = true">
+						<!-- <span class="icon icon-bw icon-add" :taskId="task.uri" /> -->
+						{{ $t('tasks', 'Add subtask') }}
+					</ActionButton>
+				</Actions>
 				<button class="inline task-star reactive no-nav" @click="toggleStarred(task)">
 					<span :class="[iconStar, {'disabled': task.calendar.readOnly}]" class="icon" />
 				</button>
@@ -143,6 +145,9 @@ import { linkify } from '../directives/linkify.js'
 import TaskStatusDisplay from './TaskStatusDisplay'
 import TaskDragContainer from './TaskDragContainer'
 
+import Actions from '@nextcloud/vue/dist/Components/Actions'
+import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
+
 export default {
 	name: 'TaskBody',
 	directives: {
@@ -153,6 +158,8 @@ export default {
 	components: {
 		TaskStatusDisplay,
 		TaskDragContainer,
+		Actions,
+		ActionButton,
 	},
 	props: {
 		task: {

@@ -556,9 +556,9 @@
 							display: flex;
 							margin-left: auto;
 
-							&>div {
+							&>div:not(.action-item) {
 								height: 44px;
-								padding: 14px;
+								padding: 14px 7px;
 								display: flex;
 								flex-direction: row;
 								align-items: center;
